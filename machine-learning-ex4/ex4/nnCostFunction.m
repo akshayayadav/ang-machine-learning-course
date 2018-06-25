@@ -27,17 +27,26 @@ Theta2 = reshape(nn_params((1 + (hidden_layer_size * (input_layer_size + 1))):en
 % Setup some useful variables
 m = size(X, 1);
 
-lay2_out=sigmoid(X*Theta1');
 
-lay2_out = [ones(m, 1) lay2_out];
-hx = sigmoid(lay2_out*Theta2');
-
-
-
+class_labels=1:num_labels;
 % You need to return the following variables correctly 
 J = 0;
+
+for num_datapt = 1:m
+  y_lab = class_labels == y(num_datapt,1);
+  
+  X_i=[1 X(num_datapt,:)];
+  lay2_out = sigmoid(X_i*Theta1');
+  lay2_out = [1 lay2_out];
+  hx = sigmoid(lay2_out*Theta2');
+  
+  J_i = sum((-y_lab .* log(hx)) - ((1-y_lab).*log(1-hx)));
+  
+  J=J+(J_i/m);
+
 Theta1_grad = zeros(size(Theta1));
 Theta2_grad = zeros(size(Theta2));
+
 
 % ====================== YOUR CODE HERE ======================
 % Instructions: You should complete the code by working through the
