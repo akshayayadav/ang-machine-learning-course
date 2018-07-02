@@ -12,6 +12,10 @@ function W = randInitializeWeights(L_in, L_out)
 % You need to return the following variables correctly 
 W = zeros(L_out, 1 + L_in);
 
+% Randomly initialize the weights to small values
+epsilon init = 0.12;
+W = rand(L out, 1 + L in) * 2 * epsilon init − epsilon init;
+
 % ====================== YOUR CODE HERE ======================
 % Instructions: Initialize W randomly so that we break the symmetry while
 %               training the neural network.

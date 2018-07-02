@@ -43,10 +43,41 @@ for num_datapt = 1:m
   J_i = sum((-y_lab .* log(hx)) - ((1-y_lab).*log(1-hx)));
   
   J=J+(J_i/m);
+end
+
+Theta1_temp=Theta1(:,2:(input_layer_size + 1));
+Theta2_temp=Theta2(:,2:(hidden_layer_size + 1));
+nn_params_temp=[Theta1_temp(:) ; Theta2_temp(:)];
+
+params_count=size(nn_params_temp,1);
+params_sum=0;
+
+for param_i = 1:params_count
+  params_sum=params_sum+(nn_params_temp(param_i,1)**2);
+end
+params_sum=params_sum*(lambda/(2*m));
+J=J+params_sum;
 
 Theta1_grad = zeros(size(Theta1));
 Theta2_grad = zeros(size(Theta2));
 
+for num_datapt = 1:m
+  y_lab = class_labels == y(num_datapt,1);
+  y_lab=y_lab';
+  
+  X_i=[1 X(num_datapt,:)];
+  lay2_out = sigmoid(X_i*Theta1');
+  lay2_out = [1 lay2_out];
+  hx = sigmoid(lay2_out*Theta2');
+  hx=hx';
+  
+  delta_3 = hx-y_lab;
+  sigmoid_grad=sigmoidGradient(Theta1*X_i');
+  delta_2 = (Theta2'*delta_3).*sigmoid_grad;
+  delta_2 = delta_2(2:end);
+  Theta2_grad = Theta2_grad + (delta_3*lay2_out);
+  Theta1_grad = Theta1_grad + (delta_2*X_i');
+  end
 
 % ====================== YOUR CODE HERE ======================
 % Instructions: You should complete the code by working through the
